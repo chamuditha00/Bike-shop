@@ -1,91 +1,108 @@
-import { useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
-interface cartProps{
-    id: number,
-    image: any,
-    price: string,
-    topic: string,
-    quantity: number,
-   
+interface cartProps {
+  id: number;
+  image: string;
+  price: string;
+  topic: string;
+  quantity: number;
+  onUpdateQuantity: (id: number, quantity: number) => void;
+  onRemoveItem: (id: number) => void; // Add this prop to remove the item from the parent component
 }
 
+const CartCard: React.FC<cartProps> = ({ id, image, price, topic, quantity, onUpdateQuantity, onRemoveItem }) => {
+  const [productQuantity, setProductQuantity] = useState(quantity);
 
-const CartCard:React.FC<cartProps>=({image,price,topic, quantity,id})=>{
+  const updateQuantity = async (newQuantity: number) => {
+    try {
+      const response = await fetch('http://10.200.29.82:3001/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: id,
+          quantity: newQuantity,
+        }),
+      });
 
-    const [productQuantity, setproductQuantity] = useState(quantity);
-    return(
-        <View style={style.cardWrapper}>
-            <View style={{backgroundColor:'#ffffff26',borderRadius:10}}>
-            <Image style={{width:100,height:100,resizeMode:'center',justifyContent:'center',alignContent:'center'}} source={require('../assets/image/roadbike.png')}/>
-            </View>
-            <View style={{justifyContent:'space-between'}}>
-            <Text style={style.topic}>{topic}</Text>
-            <Text style={style.priceTag}>{price}</Text>
-            </View>
-            <View style={style.quantityCounter}>
-            <TouchableOpacity onPressIn={()=>{setproductQuantity(productQuantity+1)}}>
-            <LinearGradient colors={['#00a2ff', '#3e04aa']} style={{ borderRadius: 10 ,width:30,height:30,alignItems:'center',justifyContent:'center'}}>
+      if (!response.ok) {
+        throw new Error('Failed to update product quantity');
+      } else {
+        setProductQuantity(newQuantity);
+        onUpdateQuantity(id, newQuantity); // Update the parent component
+        if (newQuantity <= 0) {
+          onRemoveItem(id); // Remove the item if quantity is 0 or less
+        }
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const increaseQuantity = () => {
+    updateQuantity(productQuantity + 1);
+  };
+
+  const decreaseQuantity = () => {
+    updateQuantity(productQuantity - 1);
+  };
+
+  return (
+    <View style={style.cardWrapper}>
+      <View style={{ backgroundColor: '#ffffff26', borderRadius: 10 }}>
+        <Image
+          style={{ width: 100, height: 100, resizeMode: 'center', justifyContent: 'center', alignContent: 'center' }}
+          source={require('../assets/image/roadbike.png')}
+        />
+      </View>
+      <View style={{ justifyContent: 'space-between' }}>
+        <Text style={style.topic}>{topic}</Text>
+        <Text style={style.priceTag}>{price}</Text>
+      </View>
+      <View style={style.quantityCounter}>
+        <TouchableOpacity onPress={increaseQuantity}>
+          <LinearGradient colors={['#00a2ff', '#3e04aa']} style={{ borderRadius: 10, width: 30, height: 30, alignItems: 'center', justifyContent: 'center' }}>
             <Image source={require('../assets/image/plus.png')} />
-            </LinearGradient>
-            </TouchableOpacity>
-            <Text style={{color:'white',fontSize:20,margin:10}}>{productQuantity}</Text>
-            <TouchableOpacity onPress={()=>{setproductQuantity(productQuantity-1)}}>
-            <LinearGradient colors={['#ffffff7d', '#585758']} style={{ borderRadius: 10 ,width:30,height:30,alignItems:'center',justifyContent:'center'}}>
-            <Image source={require('../assets/image/minus.png')}  />
-            </LinearGradient>
-            </TouchableOpacity>
-            </View>   
-        </View>
-    );
-}
-
-export default CartCard;
-
+          </LinearGradient>
+        </TouchableOpacity>
+        <Text style={{ color: 'white', fontSize: 20, margin: 10 }}>{productQuantity}</Text>
+        <TouchableOpacity onPress={decreaseQuantity}>
+          <LinearGradient colors={['#ffffff7d', '#585758']} style={{ borderRadius: 10, width: 30, height: 30, alignItems: 'center', justifyContent: 'center' }}>
+            <Image source={require('../assets/image/minus.png')} />
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
 const style = StyleSheet.create({
-    quantityCounter:{
-        flexDirection:'row',
-        alignItems:'center',
-        borderRadius:10,
-        padding:10,
-        marginEnd:10,
-        
-    },
-
-    cardWrapper:{
-        backgroundColor:'#333333c3',
-        borderRadius:10,
-        padding:10,
-        margin:10,
-        flexDirection:'row',
-        justifyContent:'space-between'
-    },
-
-    topic:{
-        fontSize:24,
-        marginLeft:10,
-        color:'white',
-        fontWeight:'bold',
-        
-    },
-    priceTag:{
-        marginLeft:10,
-        marginTop:40,
-        fontSize:20,
-        color:'#00a2ff',
-    },
-    plusIcon: {
-        width: 30,
-        height: 30,
-        alignItems: 'center',
-      },
-      minusIcon: {
-        width: 14,
-        height: 14,
-        alignItems: 'center',
-        justifyContent:'center'
-      },
-
+  cardWrapper: {
+    backgroundColor: '#333333c3',
+    borderRadius: 10,
+    padding: 10,
+    margin: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  topic: {
+    color: 'white',
+    fontSize: 22,
+    marginBottom:30
+  },
+  priceTag: {
+    color: '#5acbf8',
+    fontSize: 18,
+  },
+  quantityCounter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 10,
+    padding: 10,
+    marginEnd: 10,
+  },
 });
+
+export default CartCard;

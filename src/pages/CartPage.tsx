@@ -1,7 +1,8 @@
-import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList, Animated } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import CartCard from "../component/CartCard";
 import { useEffect, useState } from "react";
+import BillContainer from "../component/BillContainer";
 interface cartProduct{
   id:number;
   name: string;
@@ -11,7 +12,13 @@ interface cartProduct{
   quantity: number;
 }
 
+
 function CartPage() {
+
+  const [descriptionVisible, setDescriptionVisible] = useState(false);
+
+  const [animation] = useState(new Animated.Value(0));
+  const [toggle, setToggle] = useState(require('../assets/image/arrowleft.png'));
      const [cart, setCart] = useState<cartProduct[]>([]);
      const getCart = async () => {
       try {
@@ -51,13 +58,28 @@ function CartPage() {
     useEffect(() => {
       calTotal();
     }, [cart]);
+
+    const toggleDescription = () => {
+      setDescriptionVisible(!descriptionVisible);
+      Animated.timing(animation, {
+        toValue: descriptionVisible ? 0 : 1,
+        duration: 600,
+        useNativeDriver: false,
+      }).start();
+      
+      setToggle(descriptionVisible ? require('../assets/image/arrowleft.png') : require('../assets/image/arrowDown.png'));
+    };
   
+    const descriptionHeight = animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 300], 
+    });
   return (
     <View style={style.backGround} >
            <View style={style.statusBar}>
-        <TouchableOpacity >
+        <TouchableOpacity onPress={toggleDescription}>
           <LinearGradient colors={['#00a2ff', '#3e04aa']} style={{ borderRadius: 10 ,width:44,height:44}}>
-            <Image source={require('../assets/image/arrowleft.png')} style={style.arrowIcon} />
+            <Image source={toggle} style={style.arrowIcon} />
           </LinearGradient>
         </TouchableOpacity>
         <Text style={style.headerText}>My Shopping Cart</Text>
@@ -69,10 +91,18 @@ function CartPage() {
           data={cart}
           keyExtractor={({id}) => id.toString()}
           renderItem={({item}) => (
-           <CartCard image={item.image} price={item.price} topic={item.name} quantity={item.quantity} id={item.id} />
+           <CartCard image={item.image} price={item.price} topic={item.name} quantity={item.quantity} id={item.id} onUpdateQuantity={(id, quantity) => {
+             const updatedCart = cart.map(product => product.id === id ? { ...product, quantity } : product);
+             setCart(updatedCart);
+           }} onRemoveItem={(id) => {
+             const updatedCart = cart.filter(product => product.id !== id);
+             setCart(updatedCart);
+           }} />
          
           )}
         />
+
+        <BillContainer subTotal={calTotal()} discount={0.3} deliveryFee={300} billContainerHeight={descriptionHeight}/>
 
         
     </View>
