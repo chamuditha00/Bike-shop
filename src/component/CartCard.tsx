@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -7,12 +8,13 @@ interface cartProps{
     price: string,
     topic: string,
     quantity: number,
-    increaseQuantity: (id: number) => void,
-    decreaseQuantity: (id: number, quantity: number) => void,
+   
 }
 
 
-const CartCard:React.FC<cartProps>=({image,price,topic, quantity,id,increaseQuantity,decreaseQuantity})=>{
+const CartCard:React.FC<cartProps>=({image,price,topic, quantity,id})=>{
+
+    const [productQuantity, setproductQuantity] = useState(quantity);
     return(
         <View style={style.cardWrapper}>
             <View style={{backgroundColor:'#ffffff26',borderRadius:10}}>
@@ -23,13 +25,13 @@ const CartCard:React.FC<cartProps>=({image,price,topic, quantity,id,increaseQuan
             <Text style={style.priceTag}>{price}</Text>
             </View>
             <View style={style.quantityCounter}>
-            <TouchableOpacity onPressIn={() => increaseQuantity(id)}>
+            <TouchableOpacity onPressIn={()=>{setproductQuantity(productQuantity+1)}}>
             <LinearGradient colors={['#00a2ff', '#3e04aa']} style={{ borderRadius: 10 ,width:30,height:30,alignItems:'center',justifyContent:'center'}}>
             <Image source={require('../assets/image/plus.png')} />
             </LinearGradient>
             </TouchableOpacity>
-            <Text style={{color:'white',fontSize:20,margin:10}}>{quantity}</Text>
-            <TouchableOpacity  onPressIn={()=>decreaseQuantity(id,quantity)}>
+            <Text style={{color:'white',fontSize:20,margin:10}}>{productQuantity}</Text>
+            <TouchableOpacity onPress={()=>{setproductQuantity(productQuantity-1)}}>
             <LinearGradient colors={['#ffffff7d', '#585758']} style={{ borderRadius: 10 ,width:30,height:30,alignItems:'center',justifyContent:'center'}}>
             <Image source={require('../assets/image/minus.png')}  />
             </LinearGradient>

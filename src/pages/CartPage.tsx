@@ -12,58 +12,7 @@ interface cartProduct{
 }
 
 function CartPage() {
-  const increaseQuantity = async (id: number) => {
-    try{
-      const response = await fetch('http://10.200.29.82:3001/cart',{
-        method: 'POST',
-        headers: {'Content-Type': 'application/json',},
-        body: JSON.stringify({
-          id: id,
-          quantity: 1,
-        }),});
-
-        console.log('Response:', response);
-        if(!response.ok){
-          throw new Error('Failed to add product to cart');
-        }else{
-            console.log('Product added to cart successfully');
-        }
-
-
-
-    }catch(error){
-      console.error('Error:', error);
-    }
-   }
-
-const decreaseQuantity = async (id: number,quantity:number) => {
-    try{
-      const response = await fetch('http://10.200.29.82:3001/cart',{
-        method: 'POST',
-        headers: {'Content-Type': 'application/json',},
-        body: JSON.stringify({
-          id: id,
-          quantity: quantity-1,
-        }),});
-
-        console.log('Response:', response);
-        if(!response.ok){
-          throw new Error('Failed to add product to cart');
-        }else{
-            console.log('Product added to cart successfully');
-        }
-}catch(error){
-      console.error('Error:', error);
-    }
-}
-
-
- 
-
      const [cart, setCart] = useState<cartProduct[]>([]);
-
-     
-
      const getCart = async () => {
       try {
         const response = await fetch('http://10.200.29.82:3001/cart');
@@ -120,7 +69,7 @@ const decreaseQuantity = async (id: number,quantity:number) => {
           data={cart}
           keyExtractor={({id}) => id.toString()}
           renderItem={({item}) => (
-           <CartCard image={item.image} price={item.price} topic={item.name} quantity={item.quantity} id={item.id} increaseQuantity={increaseQuantity} decreaseQuantity={decreaseQuantity}/>
+           <CartCard image={item.image} price={item.price} topic={item.name} quantity={item.quantity} id={item.id} />
          
           )}
         />
