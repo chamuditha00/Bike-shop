@@ -102,7 +102,7 @@ function CartPage() {
           )}
         />
 
-        <BillContainer subTotal={calTotal()} discount={0.3} deliveryFee={300} billContainerHeight={descriptionHeight}/>
+        <BillContainer subTotal={calTotal()} discount={30} deliveryFee={300} billContainerHeight={descriptionHeight}/>
 
         
     </View>

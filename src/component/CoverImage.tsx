@@ -14,7 +14,7 @@ const CoverImage:React.FC<CoverImageProps>=({imageUrl,descriptionVisible})=>{
     return(
 
         <Animated.View style={[styles.coverImageWrapper, {height : descriptionVisible? height*0.2:height*0.75}, {position: descriptionVisible? 'relative':'absolute'}]} >
-            <Image source={imageUrl} style={styles.coverImage}/>
+            <Image source={require('../assets/image/roadbike.png')} style={styles.coverImage}/>
         </Animated.View>
     );
 }

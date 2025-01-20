@@ -17,7 +17,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ name, price, image, category,
     <View style={styles.card}>
      
       <View style={styles.imageWrapper}>
-        <Image source={image} style={styles.productImage} />
+        <Image source={require('../assets/image/mountainbike.png')} style={styles.productImage} />
         <View style={styles.cardBottom}>
         <Text style={styles.category}>{category}</Text>
         <Text style={styles.name}>{name}</Text>

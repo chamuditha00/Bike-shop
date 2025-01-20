@@ -8,11 +8,12 @@ interface BillContainerProps {
     billContainerHeight: any;
 }
 const getTotal = (subTotal: number, discount: number, deliveryFee: number) => {
-    return subTotal *(1- discount) + deliveryFee;
+    let total = subTotal - (subTotal * discount) / 100 + deliveryFee;
+    return Math.ceil(total*100)/100;
 }
 const BillContainer: React.FC<BillContainerProps> = ({ subTotal, discount, deliveryFee, billContainerHeight }) => {
     return (
-        <Animated.View style={[styles.billContainer, { height: billContainerHeight }]}>
+        <Animated.View style={[styles.billContainer, { height: subTotal!==0 ?billContainerHeight:0 }]}>
             <View style={styles.billWrapper}>
                 <View style={styles.billRow}>
                     <Text style={styles.billText}>Subtotal</Text>
@@ -20,7 +21,7 @@ const BillContainer: React.FC<BillContainerProps> = ({ subTotal, discount, deliv
                 </View>
                 <View style={styles.billRow}>
                     <Text style={styles.billText}>Discount</Text>
-                    <Text style={styles.billText}>-${discount}</Text>
+                    <Text style={styles.billText}>{discount}%</Text>
                 </View>
                 <View style={styles.billRow}>
                     <Text style={styles.billText}>Delivery Fee</Text>
