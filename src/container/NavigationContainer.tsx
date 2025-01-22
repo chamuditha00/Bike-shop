@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LandingPage from '../pages/LandingPage';
 import BikeDetails from '../pages/BikeDetails';
 import CartPage from '../pages/CartPage';
+import CheckOutPage from '../pages/CheckOutPage';
 
 const Stack = createStackNavigator();
 const NavigationContainers: React.FC = () =>{
@@ -24,6 +25,10 @@ const NavigationContainers: React.FC = () =>{
         component={CartPage}
         options={{ headerShown: false }}
         />
+      <Stack.Screen
+        name="CheckoutPage"
+        component={CheckOutPage}
+        options={{ headerShown: false }}/>
     </Stack.Navigator>
   </NavigationContainer>;
 

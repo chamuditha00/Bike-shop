@@ -16,6 +16,7 @@ function BikeDetails({route, navigation}:any) {
   const [toggle, setToggle] = useState(require('../assets/image/arrowleft.png'));
 
   
+
   const directToCart= async ()=>{
  
       try {

@@ -9,11 +9,11 @@ interface cartProps {
   topic: string;
   quantity: number;
   onUpdateQuantity: (id: number, quantity: number) => void;
-  onRemoveItem: (id: number) => void; // Add this prop to remove the item from the parent component
+  onRemoveItem: (id: number) => void; 
 }
 
 const CartCard: React.FC<cartProps> = ({ id, image, price, topic, quantity, onUpdateQuantity, onRemoveItem }) => {
-  const [productQuantity, setProductQuantity] = useState(quantity);
+  const [productQuantity, setProductQuantity] = useState(1);
 
   const updateQuantity = async (newQuantity: number) => {
     try {
@@ -31,14 +31,13 @@ const CartCard: React.FC<cartProps> = ({ id, image, price, topic, quantity, onUp
       } else {
         setProductQuantity(newQuantity);
         onUpdateQuantity(id, newQuantity); // Update the parent component
-        if (newQuantity <= 0) {
-          onRemoveItem(id); // Remove the item if quantity is 0 or less
-        }
+        
       }
     } catch (error) {
       console.error('Error:', error);
     }
   };
+  
 
   const increaseQuantity = () => {
     updateQuantity(productQuantity + 1);

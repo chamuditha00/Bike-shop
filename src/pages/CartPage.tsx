@@ -3,6 +3,7 @@ import LinearGradient from "react-native-linear-gradient";
 import CartCard from "../component/CartCard";
 import { useEffect, useState } from "react";
 import BillContainer from "../component/BillContainer";
+import CheckOutPage from "./CheckOutPage";
 interface cartProduct{
   id:number;
   name: string;
@@ -13,13 +14,20 @@ interface cartProduct{
 }
 
 
-function CartPage() {
+function CartPage({navigation}:any) {
+
+
+  const directToCheckOut = () => {
+    navigation.navigate('CheckoutPage');
+};
 
   const [descriptionVisible, setDescriptionVisible] = useState(false);
 
   const [animation] = useState(new Animated.Value(0));
   const [toggle, setToggle] = useState(require('../assets/image/arrowleft.png'));
      const [cart, setCart] = useState<cartProduct[]>([]);
+
+     
      const getCart = async () => {
       try {
         const response = await fetch('http://10.200.29.82:3001/cart');
@@ -91,7 +99,7 @@ function CartPage() {
           data={cart}
           keyExtractor={({id}) => id.toString()}
           renderItem={({item}) => (
-           <CartCard image={item.image} price={item.price} topic={item.name} quantity={item.quantity} id={item.id} onUpdateQuantity={(id, quantity) => {
+           <CartCard image={item.image} price={item.price} topic={item.name} quantity={item.quantity} id={item.id} onUpdateQuantity={(id: number, quantity: any) => {
              const updatedCart = cart.map(product => product.id === id ? { ...product, quantity } : product);
              setCart(updatedCart);
            }} onRemoveItem={(id) => {
@@ -102,7 +110,7 @@ function CartPage() {
           )}
         />
 
-        <BillContainer subTotal={calTotal()} discount={30} deliveryFee={300} billContainerHeight={descriptionHeight}/>
+        <BillContainer directToCheckOut={directToCheckOut} subTotal={calTotal()} discount={30} deliveryFee={300} billContainerHeight={descriptionHeight}/>
 
         
     </View>
