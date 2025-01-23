@@ -36,7 +36,7 @@ function LandingPage({navigation}: any) {
   };
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [product]);
 
 
   // const products: Product[] = [

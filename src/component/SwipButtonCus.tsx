@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Animated, PanResponder, StyleSheet, Image } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -8,15 +8,28 @@ interface SwipeButtonProps {
     railColor?: string;
     thumbColor?: string;
     directToCheckOut:() =>void;
+    reset:() => void;
+    restValue? :  boolean
 }
 
 
 const SwipeButton:React.FC<SwipeButtonProps> = ({
-    width, height, railColor, thumbColor, directToCheckOut
+    width, height, railColor, thumbColor, directToCheckOut, reset, restValue
 
 }) => {
+
+    useEffect(() => {
+        if(restValue){
+            setSuccess(false);
+            Animated.spring(pan, {
+                toValue: { x: 0, y: 0 },
+                useNativeDriver: false,
+              }).start();
+        }
+    }, [restValue]);
   const pan = useRef(new Animated.ValueXY()).current;
   const [success, setSuccess] = useState(false);
+ 
 
   const panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => true,
@@ -24,11 +37,13 @@ const SwipeButton:React.FC<SwipeButtonProps> = ({
     onPanResponderRelease: (e, gesture) => {
       if (gesture.dx > width - height) {
         setSuccess(true);
+        reset();
         Animated.spring(pan, {
           toValue: { x: width - height, y: 0 },
           useNativeDriver: false,
         }).start(() => {
           directToCheckOut();
+       
         });
       } else {
         setSuccess(false);

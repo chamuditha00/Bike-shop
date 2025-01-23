@@ -1,5 +1,5 @@
 import { Animated, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import SwipeButton from "./SwipButtonCus";
 
 
@@ -13,19 +13,30 @@ interface BillContainerProps {
     directToCheckOut:()=>void;
 }
 
-const getTotal = (subTotal: number, discount: number, deliveryFee: number): number => {
-    const total = subTotal * (1 - discount / 100) + deliveryFee;
-    return Math.ceil(total * 100) / 100;
-};
 
-const formatNumber = (number: number): string => {
-    return new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(number);
-};
+
 
 
 
 const BillContainer: React.FC<BillContainerProps> = ({directToCheckOut, subTotal, discount, deliveryFee, billContainerHeight }) => {
+    
+    const getTotal = (subTotal: number, discount: number, deliveryFee: number): number => {
+        const total = subTotal * (1 - discount / 100) + deliveryFee;
+        return Math.ceil(total * 100) / 100;
+    };
+    
+    const formatNumber = (number: number): string => {
+        return new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(number);
+    };
+
+    
     const total = getTotal(subTotal, discount, deliveryFee);
+    const [restValue, setResetValue] = useState<boolean>(false);
+  
+    const resetButton = () => {
+        setResetValue(!restValue)
+    }
+    
 
     return (
         <Animated.View style={[styles.billContainer, { height: subTotal !== 0 ? billContainerHeight : 0 }]}>
@@ -65,7 +76,7 @@ const BillContainer: React.FC<BillContainerProps> = ({directToCheckOut, subTotal
                     containerStyles={styles.swipeButtonContainer} 
                     railStyles={styles.swipeButtonRail} 
                 /> */}
-                <SwipeButton width={200} height={50} directToCheckOut={directToCheckOut}  />
+                <SwipeButton width={200} height={50} directToCheckOut={directToCheckOut} reset={resetButton} restValue={restValue} />
             </View>
         </Animated.View>
     );
