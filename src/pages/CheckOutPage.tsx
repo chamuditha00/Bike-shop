@@ -1,11 +1,20 @@
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View, Alert } from "react-native";
 
 
-function CheckOutPage() {
+function CheckOutPage({navigation}:any) {	
+     const logout= ()=>{
+         
+          navigation.navigate('LoginPage');
+     }
+
+
   return (
    <View>
-        <Text>CheckOutPage</Text>
-   </View>  );
+     <TouchableOpacity onPress={logout}/>
+     
+   </View>
+    );
 }
 
 export default CheckOutPage;
+

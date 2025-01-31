@@ -4,13 +4,21 @@ import LandingPage from '../pages/LandingPage';
 import BikeDetails from '../pages/BikeDetails';
 import CartPage from '../pages/CartPage';
 import CheckOutPage from '../pages/CheckOutPage';
+import LoginPage from '../pages/LoginPage';
+
 
 const Stack = createStackNavigator();
 const NavigationContainers: React.FC = () =>{
 
-    return <NavigationContainer>
-    <Stack.Navigator initialRouteName="LandingPage" screenOptions={{animation:'fade'}}>
+    return(
       
+      <NavigationContainer>
+    <Stack.Navigator initialRouteName="LoginPage" screenOptions={{animation:'fade'}}>
+      <Stack.Screen
+      name='LoginPage'
+      component={LoginPage}
+      options={{headerShown:false}}
+      />
       <Stack.Screen
         name="LandingPage"
         component={LandingPage}
@@ -30,7 +38,8 @@ const NavigationContainers: React.FC = () =>{
         component={CheckOutPage}
         options={{ headerShown: false }}/>
     </Stack.Navigator>
-  </NavigationContainer>;
-
+      </NavigationContainer>
+      
+      );
 }
 export default NavigationContainers;
